@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>嫁给我吧</title>
+  <style>
+    body{
+      background: #EF817D;
+      text-align: center;
+    }
+		canvas{
+      cursor:pointer; 
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pane" width="1024" height="520"></canvas>
+  <script>
+    var bg = new Image();
+		bg.src = "../images/bg.png";
+    var person = new Image();
+		person.src = "../images/person.png";
+
+    /*************  flowers  ****************/
+    var WIDTH=92,HEIGHT=81;
+
+    var flowers=[];
+    for(var i=0;i<99;i++){
+      var flower=new Image();
+      flower.src="../images/flower.png";
+      reset(flower);
+      flowers.push(flower);
+    }
+
+    function reset(flower){
+      flower.scale=parseInt(Math.random()*71+30)/100;
+      flower._x=parseInt(Math.random()*(1024-WIDTH));
+      flower._y=-parseInt(Math.random()*(520-HEIGHT+1)+HEIGHT);
+      flower.step=parseInt(Math.random()*5+1);
+    }
+
+    function down(flower){
+      if(flower._y<520)
+        flower._y+=flower.step;
+      else
+        reset(flower);
+    }
+
+    /*************  buttons  ****************/
+    //yes按钮的对象
+    var btn_yes=new Image();
+    btn_yes.src="../images/answer0.png";
+    btn_yes._x=328,btn_yes._y=246,//yes按钮中心的目标位置
+    btn_yes.rotate=0.56673;//简化代码，yes按钮旋转角度定死
+    btn_yes.r=50;//yes按钮的半径
+    //yes文字
+    var yes=new Image();
+    yes.src="../images/yes.png";
+    yes._x=btn_yes._x; 
+    yes._y=btn_yes._y;
+    yes.r=15;
+    //心
+    var heart=new Image();
+    heart.src="../images/hart.png";
+    pass=false;
+    //no按钮和no文字
+
+    //no按钮的对象
+    var btn_no=new Image();
+    btn_no.src="../images/answer0.png";
+    btn_no._x=686,btn_no._y=294,//yes按钮中心的目标位置
+    btn_no.rotate=2.6;//简化代码，yes按钮旋转角度定死
+    btn_no.r=40;//yes按钮的半径
+    //no文字
+    var no=new Image();
+    no.src="../images/no.png";
+    no.r=15;
+
+		var pen = pane.getContext('2d');
+
+    function paint(){
+      pen.clearRect(0,0,1024,520);
+      pen.drawImage(bg, 0, 0);
+      /**********  flowers  ************/
+      for(var i=0;i<flowers.length;i++){
+        var flower=flowers[i];
+        down(flower);
+        pen.save();//缩小前，保存绘图环境
+        pen.translate(flower._x,flower._y);//先位移
+        pen.scale(flower.scale,flower.scale);//再缩放
+        pen.drawImage(flower,0,0);//再在当前位置绘制
+        pen.restore();//画完小花，将绘图环境恢复原样，以免影响后续绘制
+      }
+      pen.drawImage(person, 0, 0);
+      /**********  buttons  ************/
+      pen.save();
+      pen.translate(btn_yes._x,btn_yes._y);//先位移，
+      pen.rotate(btn_yes.rotate);//再旋转
+      pen.drawImage(btn_yes,-btn_yes.r,-btn_yes.r);//绘制时，稍微向上提一小段距离
+      pen.restore();
+      pen.save();
+      pen.translate(yes._x,yes._y);//先位移，
+      pen.drawImage(yes,-yes.r,-yes.r);
+      pen.restore();
+      //绘制no按钮和文字
+      pen.save();
+      pen.translate(btn_no._x,btn_no._y);//先位移，
+      pen.rotate(btn_no.rotate);//再旋转
+      pen.drawImage(btn_no,-btn_no.r,-btn_no.r);//绘制时，稍微向上提一小段距离
+      pen.restore();
+      pen.save();
+      pen.translate(btn_no._x,btn_no._y);//先位移，
+      pen.drawImage(no,-no.r-25,-no.r);
+      pen.restore();
+
+      //绘制心
+      if(pass)
+        pen.drawImage(heart,0,0);
+    }
+
+    window.onload=function(){
+      setInterval(paint,50);
+    }
+    pane.onclick = e=>{
+			if(pass) return;
+	    var x=e.offsetX, y=e.offsetY;
+	    if(Math.sqrt(
+        Math.pow(x-btn_yes._x,2)+Math.pow(y-btn_yes._y,2)
+      )<=btn_yes.r){
+        pass=true;
+      }else if(Math.sqrt(
+        Math.pow(x-btn_no._x,2)+Math.pow(y-btn_no._y,2)
+      )<=btn_no.r){
+        alert("咱俩不合适!");
+      }
+	  };
+
+    pane.onmousemove = e=>{
+      console.log("Hello");
+	    if(pass) return;
+	    var x=e.offsetX, y=e.offsetY;	    	
+	    if(Math.sqrt(
+        Math.pow(x-btn_no._x,2)+Math.pow(y-btn_no._y,2)
+      )<=btn_no.r+10){
+				//随机获取指定范围内1个点
+        var rx;var ry;var d;
+        do{ax = Math.floor((Math.random() * 190) + 648);
+          ay = Math.floor((Math.random() * 190) + 210);
+          d = Math.sqrt(
+            Math.pow(x-ax,2)+Math.pow(y-ay,2)
+          );
+        }while(d<btn_no.r+10);
+        btn_no._x = ax;
+        btn_no._y = ay;
+	    }
+	  };
+  </script>
+</body>
+</html>

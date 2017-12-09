@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>嫁给我吧</title>
+  <style>
+    body{
+      background: #EF817D;
+      text-align: center;
+    }
+		canvas{
+      cursor:pointer; 
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pane" width="1024" height="520"></canvas>
+  <script>
+    var bg = new Image();
+		bg.src = "../images/bg.png";
+    var person = new Image();
+		person.src = "../images/person.png";
+
+    /*************  flowers  ****************/
+    var WIDTH=92,HEIGHT=81;
+
+    var flowers=[];
+    for(var i=0;i<99;i++){
+      var flower=new Image();
+      flower.src="../images/flower.png";
+      reset(flower);
+      flowers.push(flower);
+    }
+
+    function reset(flower){
+      flower.scale=parseInt(Math.random()*71+30)/100;
+      flower._x=parseInt(Math.random()*(1024-WIDTH));
+      flower._y=-parseInt(Math.random()*(520-HEIGHT+1)+HEIGHT);
+      flower.step=parseInt(Math.random()*5+1);
+    }
+
+    function down(flower){
+      if(flower._y<520)
+        flower._y+=flower.step;
+      else
+        reset(flower);
+    }
+
+    /*************  buttons  ****************/
+    //yes按钮的对象
+    var btn_yes=new Image();
+    btn_yes.src="../images/answer0.png";
+    btn_yes._x=328,btn_yes._y=246,//yes按钮中心的目标位置
+    btn_yes.rotate=0.56673;//简化代码，yes按钮旋转角度定死
+    btn_yes.r=50;//yes按钮的半径
+    
+		var pen = pane.getContext('2d');
+
+    function paint(){
+      pen.clearRect(0,0,1024,520);
+      pen.drawImage(bg, 0, 0);
+      /**********  flowers  ************/
+      for(var i=0;i<flowers.length;i++){
+        var flower=flowers[i];
+        down(flower);
+        pen.save();//缩小前，保存绘图环境
+        pen.translate(flower._x,flower._y);//先位移
+        pen.scale(flower.scale,flower.scale);//再缩放
+        pen.drawImage(flower,0,0);//再在当前位置绘制
+        pen.restore();//画完小花，将绘图环境恢复原样，以免影响后续绘制
+      }
+      pen.drawImage(person, 0, 0);
+      /**********  buttons  ************/
+      pen.save();
+      pen.translate(btn_yes._x,btn_yes._y);//先位移，
+      pen.rotate(btn_yes.rotate);//再旋转
+      pen.drawImage(btn_yes,-btn_yes.r,-btn_yes.r);//绘制时，稍微向上提一小段距离
+      pen.restore();
+    }
+
+    window.onload=function(){
+      setInterval(paint,50);
+    }
+    
+  </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>嫁给我吧</title>
+  <style>
+    body{
+      background: #EF817D;
+      text-align: center;
+    }
+		canvas{
+      cursor:pointer; 
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pane" width="1024" height="520"></canvas>
+  <script>
+    var bg = new Image();
+		bg.src = "../images/bg.png";
+    var person = new Image();
+		person.src = "../images/person.png";
+
+    var WIDTH=92,HEIGHT=81;
+
+    var flower=new Image();
+    flower.src="../images/flower.png";
+    //Step1: 定义函数，专门生成花朵随机大小和位置
+    function reset(flower){
+      //随机缩放比例
+      flower.scale=parseInt(Math.random()*71+30)/100;
+      //随机x坐标
+      flower._x=parseInt(Math.random()*(1024-WIDTH));
+      //随机y坐标: 在canvas上方520高范围内提前，分布好鲜花，避免集中下落，不好看
+      flower._y=-parseInt(Math.random()*(520-HEIGHT+1)+HEIGHT);
+      flower.step=parseInt(Math.random()*5+1);
+    }
+    reset(flower);
+
+    function down(flower){
+      if(flower._y<520)
+        flower._y+=flower.step;
+      else
+        //Step2: 每次到底，重新定位花朵大小和新位置
+        reset(flower);
+    }
+    
+		var pen = pane.getContext('2d');
+
+    function paint(){
+      pen.clearRect(0,0,1024,520);
+      pen.drawImage(bg, 0, 0);
+      down(flower);
+      //Step3: 缩小画笔，画小花
+      pen.save();//缩小前，保存绘图环境
+      pen.translate(flower._x,flower._y);//先位移
+      pen.scale(flower.scale,flower.scale);//再缩放
+      pen.drawImage(flower,0,0);//再在当前位置绘制
+      pen.restore();//画完小花，将绘图环境恢复原样，以免影响后续绘制
+      pen.drawImage(person, 0, 0);
+    }
+
+    window.onload=function(){
+      setInterval(paint,50);
+    }
+    
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>嫁给我吧</title>
+  <style>
+    body{
+      background: #EF817D;
+      text-align: center;
+    }
+		canvas{
+      cursor:pointer; 
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pane" width="1024" height="520"></canvas>
+  <script>
+    var bg = new Image();
+		bg.src = "../images/bg.png";
+    var person = new Image();
+		person.src = "../images/person.png";
+    //Step1: 定义一朵flower，初始化开始位置为x=0,y=0
+    var WIDTH=92,HEIGHT=81;//图片原始大小
+    var flower=new Image();
+    flower.src="../images/flower.png";
+    //强调！不能用x和y，有冲突！！！
+    flower._x=0;
+    flower._y=-HEIGHT;//从屏幕上方落下
+    //Step3: 定义flower每次下落的距离
+    flower.step=5;
+    //Step4: 定义让flower下落的方法
+    function down(flower){
+      //Step7: 如果超出，就回到顶部
+      if(flower._y<520)
+        flower._y+=flower.step;
+      else
+        flower._y=-HEIGHT;
+    }
+    
+		var pen = pane.getContext('2d');
+
+    //Step5: 定义重绘一切的函数
+    function paint(){
+      pen.clearRect(0,0,1024,520);
+      pen.drawImage(bg, 0, 0);
+      pen.drawImage(person, 0, 0);
+      down(flower);
+      pen.drawImage(flower,flower._x,flower._y);
+    }
+
+    window.onload=function(){
+      //Step6: 反复重绘一切
+      setInterval(paint,50);
+      // pen.drawImage(bg, 0, 0);
+      // pen.drawImage(person, 0, 0);
+      // //Step2: 在flower定义的x,y位置绘制一朵小花
+      // pen.drawImage(flower,flower.x,flower.y);
+    }
+    
+  </script>
+</body>
+</html>
