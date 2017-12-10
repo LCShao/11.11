@@ -52,8 +52,12 @@
     //yes按钮的对象
     var btn_yes=new Image();
     btn_yes.src="../images/answer0.png";
-    btn_yes._x=328,btn_yes._y=246,//yes按钮中心的目标位置
-    btn_yes.rotate=0.56673;//简化代码，yes按钮旋转角度定死
+    btn_yes._x=328,btn_yes._y=246;//yes按钮中心的目标位置
+    var boy_x=460, boy_y=330;//boy的脸中心点位置
+    console.log();
+    btn_yes.rotate=//旋转角度等于对边(y-y)比上侧边(x-x)的反正切值
+      Math.atan2(boy_y-btn_yes._y,boy_x-btn_yes._x);
+      //atan2比atan智能在，可智能根据象限，获得角度，不会产生歧义。
     btn_yes.r=50;//yes按钮的半径
     //yes文字
     var yes=new Image();
@@ -70,8 +74,9 @@
     //no按钮的对象
     var btn_no=new Image();
     btn_no.src="../images/answer0.png";
-    btn_no._x=686,btn_no._y=294,//yes按钮中心的目标位置
-    btn_no.rotate=2.6;//简化代码，yes按钮旋转角度定死
+    btn_no._x=686,btn_no._y=294;//yes按钮中心的目标位置
+    var girl_x=564, girl_y=402;
+    btn_no.rotate=Math.atan2(girl_y-btn_no._y,girl_x-btn_no._x);
     btn_no.r=40;//yes按钮的半径
     //no文字
     var no=new Image();
@@ -138,7 +143,6 @@
 	  };
 
     pane.onmousemove = e=>{
-      console.log("Hello");
 	    if(pass) return;
 	    var x=e.offsetX, y=e.offsetY;	    	
 	    if(Math.sqrt(
@@ -154,6 +158,7 @@
         }while(d<btn_no.r+10);
         btn_no._x = ax;
         btn_no._y = ay;
+        btn_no.rotate=Math.atan2(girl_y-btn_no._y,girl_x-btn_no._x);
 	    }
 	  };
   </script>
