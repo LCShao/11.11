@@ -141,7 +141,26 @@
         alert("咱俩不合适!");
       }
 	  };
-
+    pane.addEventListener("touchmove",e=>{
+      e.preventDefault();
+      if(pass) return;
+	    var x=e.touchs[0].clientX, y=e.touchs[0].clientY;	    	
+	    if(Math.sqrt(
+        Math.pow(x-btn_no._x,2)+Math.pow(y-btn_no._y,2)
+      )<=btn_no.r+10){
+				//随机获取指定范围内1个点
+        var rx;var ry;var d;
+        do{ax = Math.floor((Math.random() * 190) + 648);
+          ay = Math.floor((Math.random() * 190) + 210);
+          d = Math.sqrt(
+            Math.pow(x-ax,2)+Math.pow(y-ay,2)
+          );
+        }while(d<btn_no.r+10);
+        btn_no._x = ax;
+        btn_no._y = ay;
+        btn_no.rotate=Math.atan2(girl_y-btn_no._y,girl_x-btn_no._x);
+	    }
+    },false);
     pane.onmousemove = e=>{
 	    if(pass) return;
 	    var x=e.offsetX, y=e.offsetY;	    	
